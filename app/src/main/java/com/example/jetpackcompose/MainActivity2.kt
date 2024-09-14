@@ -169,7 +169,7 @@ fun ShowsUserDetail(position: Int = 0) {
 fun MyButton() {
     var buttonText by remember { mutableStateOf("Добавить в друзья") }
     var isFriend by remember { mutableStateOf(false) }
-    val color by animateColorAsState(if (isFriend) Color.Blue else Color.DarkGray)
+    val color by animateColorAsState(if (isFriend) Color.Green else Color.DarkGray)
     Button(
         modifier = Modifier.fillMaxWidth(),
         onClick = {
