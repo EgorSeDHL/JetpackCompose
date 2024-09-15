@@ -6,10 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,14 +86,14 @@ fun LazyColumnSample() {
         }
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // Затемнение фона при выборе элемента
-            if (selectedPosition != -1) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray)
-                )
-            }
+//            // Затемнение фона при выборе элемента
+//            if (selectedPosition != -1) {
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(Color.LightGray)
+//                )
+//            }
 
             LazyColumn(
                 modifier = Modifier
@@ -126,18 +134,27 @@ fun MyListItem(
     val surnameFontSize by animateFloatAsState(if (isSelected) 28f else 13f)
     val rowHeight by animateDpAsState(if (isSelected) 180.dp else 42.dp)
     val mContext = LocalContext.current
+    val density = LocalDensity.current
 
     AnimatedVisibility(visible = isVisible,
-        enter = scaleIn(),
-        exit =  shrinkVertically()
 
+        enter = slideInVertically {
+            with(density) { 40.dp.roundToPx() }
+        } + expandVertically(
+            tween(durationMillis = 2000),
+            expandFrom = Alignment.Top
+        ) + fadeIn(
+            initialAlpha = 0.3f
 
+        ),
+        exit = slideOutVertically() +
+                shrinkVertically() +
+                fadeOut()
     ) {
         Box(
 
             modifier = Modifier
                 .fillMaxWidth()
-
                 .clickable {
                     onClick()
                     println(position)
@@ -147,14 +164,12 @@ fun MyListItem(
                 }
         ) {
             Column {
-
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(4.dp)
-                        .height(rowHeight) // Используем анимированную высоту строки
-                        .background(backgroundColor) // Используем анимированный цвет фона
+                        .height(rowHeight)
+                        .background(backgroundColor)
                 ) {
                     Box(
                         modifier = Modifier
@@ -183,7 +198,7 @@ fun MyListItem(
                         ) {
                             Text(
                                 text = "Number $position",
-                                fontSize = numberFontSize.sp // Используем анимированный размер шрифта
+                                fontSize = numberFontSize.sp
                             )
                         }
 
@@ -197,7 +212,7 @@ fun MyListItem(
                         ) {
                             Text(
                                 text = "Surname",
-                                fontSize = surnameFontSize.sp    // Используем анимированный размер шрифта
+                                fontSize = surnameFontSize.sp
                             )
                         }
 
@@ -212,7 +227,7 @@ fun MyListItem(
                     ) {
 
                         Button(
-                            onClick = { /* Действие для кнопки 1 */ }) {
+                            onClick = {  }) {
                             Text(text = "Добавить в друзья")
                         }
                         Button(

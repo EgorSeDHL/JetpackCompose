@@ -141,7 +141,9 @@ fun ShowsUserDetail(position: Int = 0) {
                     Image(
                         bitmap = ImageBitmap.imageResource(R.drawable.user),
                         modifier = Modifier
-                            .size(300.dp),
+                            .fillMaxSize()
+                            ,
+
 //                            .scale(1.5f),
                         contentDescription = "Expanded Photo"
                     )
